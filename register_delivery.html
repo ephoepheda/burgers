@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JOIN QUEEN BURGER | Delivery Team 🛵</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800;900&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .auth-container { max-width: 450px; margin: 100px auto; padding: 40px; background: var(--bg-card); border-radius: 24px; border: 1px solid rgba(255,255,255,0.05); box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
+        .auth-header { text-align: center; margin-bottom: 30px; }
+        .auth-header h2 { font-family: var(--font-display); font-weight: 800; font-size: 2rem; margin-bottom: 10px; }
+        .auth-header p { color: var(--text-muted); font-size: 14px; }
+        .invite-hint { font-size: 11px; color: var(--text-muted); margin-top: 5px; font-style: italic; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="nav-container">
+            <div class="logo" onclick="location.href='index.html'" style="cursor:pointer;">QUEEN <span>BURGER</span></div>
+            <div class="nav-actions">
+                <a href="delivery_login.html" style="color:white; text-decoration:none; font-weight:700; font-size:14px;">Sign In</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="auth-container">
+        <div class="auth-header">
+            <h2>Join the Royal Fleet</h2>
+            <p>Start delivering and earning today!</p>
+        </div>
+
+        <form id="registerForm">
+            <div class="form-group">
+                <label class="form-label">Full Name</label>
+                <input type="text" id="regName" class="form-input" placeholder="e.g. Abebe Bikila" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Phone Number</label>
+                <input type="tel" id="regPhone" class="form-input" placeholder="09..." required>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Password</label>
+                <input type="password" id="regPassword" class="form-input" placeholder="Create a secure password" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Confirm Password</label>
+                <input type="password" id="regConfirm" class="form-input" placeholder="Repeat your password" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label">🔑 Admin Invite Code</label>
+                <input type="password" id="regInviteCode" class="form-input" placeholder="Enter the code given by manager" required>
+                <p class="invite-hint">Only authorized staff can register. Ask your manager for the code.</p>
+            </div>
+
+            <button type="submit" class="btn btn-attractive" style="margin-top:20px;">REGISTER NOW</button>
+        </form>
+
+        <p style="text-align:center; margin-top:20px; font-size:13px; color:var(--text-muted);">
+            Already have an account? <a href="delivery_login.html" style="color:var(--primary); text-decoration:none; font-weight:700;">Sign In</a>
+        </p>
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <script src="auth_delivery.js"></script>
+    <script>
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name       = document.getElementById('regName').value.trim();
+            const phone      = document.getElementById('regPhone').value.trim();
+            const password   = document.getElementById('regPassword').value;
+            const confirm    = document.getElementById('regConfirm').value;
+            const inviteCode = document.getElementById('regInviteCode').value.trim().toUpperCase();
+
+            if (password !== confirm) {
+                Swal.fire({ title: 'Passwords Don\'t Match', icon: 'error', confirmButtonColor: '#ff512f', background: '#1a1a2e', color: '#fff' });
+                return;
+            }
+
+            // ── Validate against dynamic per-person invite codes ──
+            let pending = JSON.parse(localStorage.getItem('queenBurgerPendingInvites')) || [];
+            const invite = pending.find(p => p.code === inviteCode && p.status === 'Pending');
+
+            if (!invite) {
+                Swal.fire({
+                    title: '🚫 Invalid Invite Code',
+                    text: 'The code you entered is incorrect or has already been used. Please ask your manager for a valid code.',
+                    icon: 'error',
+                    confirmButtonColor: '#ff512f',
+                    background: '#1a1a2e',
+                    color: '#fff'
+                });
+                return;
+            }
+
+            const success = await auth.register(name, phone, password);
+            if (success) {
+                // Mark the invite as Registered
+                pending = pending.map(p =>
+                    p.code === inviteCode ? { ...p, status: 'Registered', registeredAt: new Date().toISOString() } : p
+                );
+                localStorage.setItem('queenBurgerPendingInvites', JSON.stringify(pending));
+
+                await Swal.fire({
+                    title: '🎉 Welcome to the Fleet!',
+                    text: 'Registration successful! You can now log in and start delivering.',
+                    icon: 'success',
+                    confirmButtonText: 'Go to Login',
+                    confirmButtonColor: '#2ecc71',
+                    background: '#1a1a2e',
+                    color: '#fff'
+                });
+                location.href = 'delivery_login.html';
+            }
+        });
+    </script>
+</body>
+</html>

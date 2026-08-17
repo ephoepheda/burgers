@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QUEEN BURGER | Manager Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800;900&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .admin-container { max-width: 1200px; margin: 100px auto; padding: 0 20px; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 40px; }
+        .stat-card { background: var(--bg-card); padding: 30px; border-radius: 24px; border: 1px solid rgba(255,255,255,0.05); text-align: center; transition: var(--transition); }
+        .stat-card:hover { transform: translateY(-5px); border-color: var(--primary); }
+        .stat-value { font-size: 2.2rem; font-weight: 900; color: var(--primary); margin-top: 10px; font-family: var(--font-display); }
+        .stat-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1.5px; font-weight: 700; }
+
+        .admin-table-container { background: var(--bg-card); border-radius: 24px; border: 1px solid rgba(255,255,255,0.05); overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
+        table { width: 100%; border-collapse: collapse; color: white; }
+        th { background: rgba(255,255,255,0.02); padding: 20px; text-align: left; font-size: 0.7rem; text-transform: uppercase; color: var(--text-muted); letter-spacing: 1px; }
+        td { padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.03); font-size: 0.9rem; }
+        tr:hover { background: rgba(255,255,255,0.01); }
+
+        .status-badge { padding: 6px 12px; border-radius: 30px; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; }
+        .status-pending { background: rgba(233, 185, 73, 0.1); color: #e9b949; }
+        .status-preparing { background: rgba(255, 81, 43, 0.1); color: var(--primary); }
+        .status-ready { background: rgba(46, 204, 113, 0.1); color: #2ecc71; }
+        .status-delivered { background: rgba(136, 136, 136, 0.1); color: #888; }
+
+        .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        h2 { font-family: var(--font-display); font-weight: 900; font-size: 1.8rem; }
+
+        /* ── Modern Confirm Modal ── */
+        #adminConfirmOverlay {
+            position: fixed; inset: 0; z-index: 9999;
+            background: rgba(0,0,0,0.65);
+            backdrop-filter: blur(8px);
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.25s ease;
+        }
+        #adminConfirmOverlay.active { opacity: 1; pointer-events: all; }
+        #adminConfirmBox {
+            background: linear-gradient(145deg, #1e1e2e, #16161f);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 24px;
+            padding: 40px 36px 32px;
+            width: 360px;
+            max-width: 90vw;
+            box-shadow: 0 30px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,81,43,0.15);
+            transform: scale(0.88) translateY(20px);
+            transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
+            text-align: center;
+        }
+        #adminConfirmOverlay.active #adminConfirmBox { transform: scale(1) translateY(0); }
+        #adminConfirmIcon {
+            font-size: 2.8rem;
+            margin-bottom: 16px;
+            animation: iconPulse 1.5s ease-in-out infinite;
+        }
+        @keyframes iconPulse {
+            0%,100% { transform: scale(1); }
+            50% { transform: scale(1.12); }
+        }
+        #adminConfirmTitle {
+            font-family: var(--font-display);
+            font-size: 1.25rem;
+            font-weight: 900;
+            color: #fff;
+            margin-bottom: 10px;
+        }
+        #adminConfirmMsg {
+            font-size: 0.88rem;
+            color: rgba(255,255,255,0.5);
+            margin-bottom: 28px;
+            line-height: 1.6;
+        }
+        .confirm-btn-row { display: flex; gap: 12px; justify-content: center; }
+        #adminConfirmOk {
+            flex: 1;
+            padding: 13px 0;
+            border: none;
+            border-radius: 12px;
+            font-family: var(--font-display);
+            font-weight: 800;
+            font-size: 0.85rem;
+            cursor: pointer;
+            letter-spacing: 0.5px;
+            transition: transform 0.15s, box-shadow 0.15s;
+        }
+        #adminConfirmOk.danger {
+            background: linear-gradient(135deg, #ff512f, #dd2476);
+            color: #fff;
+            box-shadow: 0 6px 20px rgba(255,81,43,0.35);
+        }
+        #adminConfirmOk:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(255,81,43,0.45); }
+        #adminConfirmCancel {
+            flex: 1;
+            padding: 13px 0;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            background: rgba(255,255,255,0.04);
+            color: rgba(255,255,255,0.6);
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: background 0.2s, color 0.2s;
+        }
+        #adminConfirmCancel:hover { background: rgba(255,255,255,0.09); color: #fff; }
+    </style>
+
+    <script src="admin_auth.js"></script>
+    <script>adminAuth.checkAuth();</script>
+</head>
+<body style="padding-bottom: 0;">
+
+    <header>
+        <div class="nav-container">
+            <div class="logo">MANAGER <span>DASHBOARD</span></div>
+            <div class="nav-actions">
+                <button class="btn btn-secondary" onclick="adminAuth.logout()" style="padding:8px 16px; font-size:12px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color:white; border-radius:8px; cursor:pointer;">LOGOUT</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="admin-container">
+        <div class="admin-header">
+            <h2>Business Intelligence</h2>
+            <button class="btn btn-primary" onclick="admin.clearOrders()" style="padding:10px 20px; font-size:11px; border-radius:8px;">PURGE HISTORY</button>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-label">Total Volume</div>
+                <div class="stat-value" id="statOrders">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Royal Revenue</div>
+                <div class="stat-value" id="statRevenue">0 ETB</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Active Kitchen</div>
+                <div class="stat-value" id="statPending">0</div>
+            </div>
+        </div>
+
+        <h3 style="margin-bottom:20px; font-family:var(--font-display); font-weight:800;">Recent Stream</h3>
+        <div class="admin-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Order</th>
+                        <th>Patron</th>
+                        <th>Manifest</th>
+                        <th>Valuation</th>
+                        <th>Hub</th>
+                        <th>State</th>
+                        <th>Control</th>
+                    </tr>
+                </thead>
+                <tbody id="adminOrderTable">
+                    <!-- Injected via JS -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- ─── Delivery Staff Section ─── -->
+        <div style="margin-top:50px;">
+            <div class="admin-header" style="margin-bottom:20px;">
+                <h2>🛵 Delivery Fleet</h2>
+            </div>
+
+            <!-- Generate Invite Code Card -->
+            <div style="background:var(--bg-card); border-radius:24px; border:1px solid rgba(255,255,255,0.06); padding:30px 35px; margin-bottom:30px; box-shadow:0 10px 30px rgba(0,0,0,0.25);">
+                <div style="font-size:0.7rem; text-transform:uppercase; letter-spacing:1.5px; color:var(--text-muted); font-weight:700; margin-bottom:18px;">🔑 Generate Personal Invite Code</div>
+
+                <div style="display:flex; gap:14px; flex-wrap:wrap; align-items:flex-end;">
+                    <div style="flex:1; min-width:200px;">
+                        <label style="font-size:11px; color:var(--text-muted); font-weight:700; text-transform:uppercase; letter-spacing:1px; display:block; margin-bottom:8px;">Staff Member Name</label>
+                        <input type="text" id="inviteNameInput" placeholder="e.g. Abebe Bikila"
+                            style="width:100%; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:white; padding:13px 18px; border-radius:12px; font-family:inherit; font-size:14px; outline:none; box-sizing:border-box; transition:border-color 0.2s;"
+                            onfocus="this.style.borderColor='var(--primary)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'">
+                    </div>
+                    <button onclick="admin.generateInviteCode()"
+                        style="background:linear-gradient(135deg,#f1c40f,#e67e22); color:#000; border:none; padding:13px 26px; border-radius:12px; font-weight:900; font-size:13px; cursor:pointer; white-space:nowrap; transition:var(--transition); box-shadow:0 6px 20px rgba(241,196,15,0.3);"
+                        onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">
+                        ⚡ Generate Code
+                    </button>
+                </div>
+            </div>
+
+            <!-- Pending Invites Table -->
+            <h3 style="margin-bottom:16px; font-family:var(--font-display); font-weight:800;">Pending Invites</h3>
+            <div class="admin-table-container" style="margin-bottom:30px;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Name</th>
+                            <th>Invite Code</th>
+                            <th>Status</th>
+                            <th>Control</th>
+                        </tr>
+                    </thead>
+                    <tbody id="pendingInvitesTable">
+                        <!-- Injected via JS -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Registered Delivery Staff Table -->
+            <h3 style="margin-bottom:16px; font-family:var(--font-display); font-weight:800;">Registered Staff</h3>
+            <div class="admin-table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Name</th>
+                            <th>Phone</th>
+                            <th>Status</th>
+                            <th>Control</th>
+                        </tr>
+                    </thead>
+                    <tbody id="deliveryStaffTable">
+                        <!-- Injected via JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modern Confirm Modal -->
+    <div id="adminConfirmOverlay">
+        <div id="adminConfirmBox">
+            <div id="adminConfirmIcon">⚠️</div>
+            <div id="adminConfirmTitle">Are you sure?</div>
+            <div id="adminConfirmMsg">This action cannot be undone.</div>
+            <div class="confirm-btn-row">
+                <button id="adminConfirmOk" class="danger">Confirm</button>
+                <button id="adminConfirmCancel">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="admin.js"></script>
+</body>
+</html>

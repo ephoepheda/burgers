@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LOGIN | QUEEN BURGER Fleet 🛵</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800;900&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .auth-container { max-width: 450px; margin: 100px auto; padding: 40px; background: var(--bg-card); border-radius: 24px; border: 1px solid rgba(255,255,255,0.05); box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
+        .auth-header { text-align: center; margin-bottom: 30px; }
+        .auth-header h2 { font-family: var(--font-display); font-weight: 800; font-size: 2rem; margin-bottom: 10px; }
+        .auth-header p { color: var(--text-muted); font-size: 14px; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="nav-container">
+            <div class="logo" onclick="location.href='index.html'" style="cursor:pointer;">QUEEN <span>BURGER</span></div>
+            <div class="nav-actions">
+                <a href="register_delivery.html" style="color:white; text-decoration:none; font-weight:700; font-size:14px;">Join Now</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="auth-container">
+        <div class="auth-header">
+            <h2>Welcome Back</h2>
+            <p>Ready for your next delivery?</p>
+        </div>
+
+        <form id="loginForm">
+            <div class="form-group">
+                <label class="form-label">Phone Number</label>
+                <input type="tel" id="loginPhone" class="form-input" placeholder="09..." required>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Password</label>
+                <input type="password" id="loginPassword" class="form-input" placeholder="Enter your password" required>
+            </div>
+
+            <button type="submit" class="btn btn-attractive" style="margin-top:20px;">SIGN IN</button>
+        </form>
+
+        <p style="text-align:center; margin-top:20px; font-size:13px; color:var(--text-muted);">
+            New here? <a href="register_delivery.html" style="color:var(--primary); text-decoration:none; font-weight:700;">Join the team</a>
+        </p>
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <script src="auth_delivery.js"></script>
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const phone    = document.getElementById('loginPhone').value;
+            const password = document.getElementById('loginPassword').value;
+
+            const user = await auth.login(phone, password);
+            if (user) {
+                await Swal.fire({
+                    title: `🛵 Welcome back, ${user.name}!`,
+                    text: 'Login successful. Taking you to your delivery panel...',
+                    icon: 'success',
+                    timer: 2000,
+                    timerProgressBar: true,
+                    showConfirmButton: false,
+                    background: 'linear-gradient(145deg, #1a1a2e, #16213e)',
+                    color: '#fff'
+                });
+                location.href = 'delivery_panel.html';
+            } else {
+                Swal.fire({
+                    title: '❌ Login Failed',
+                    text: 'Invalid phone number or password. Please try again.',
+                    icon: 'error',
+                    confirmButtonText: 'Try Again',
+                    confirmButtonColor: '#ff512f',
+                    background: '#1a1a2e',
+                    color: '#fff'
+                });
+            }
+        });
+    </script>
+</body>
+</html>

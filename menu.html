@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QUEEN BURGER | Menu 🍔</title>
+    <!-- Premium Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800;900&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- HEADER -->
+    <header>
+        <div class="nav-container">
+            <div class="logo" onclick="location.href='index.html'">QUEEN <span data-i18n="logo_burger">BURGER</span></div>
+            
+            <div class="search-container">
+                <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                <input type="text" class="search-input" id="menuSearch" placeholder="Search burgers, drinks..." data-i18n-placeholder="search_placeholder">
+            </div>
+
+            <div class="nav-actions">
+                <!-- Language Switcher -->
+                <div class="lang-switch" onclick="app.toggleLanguage()" style="cursor:pointer; margin-right:20px; display:flex; align-items:center; gap:8px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
+                    <span id="currentLang" style="font-weight:700; font-size:14px;">EN</span>
+                </div>
+
+                <div class="nav-orders-wrap" id="navOrdersBtn" onclick="location.href='orders.html'">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-package"><path d="M16.5 9.4 7.55 4.24"/><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4a2 2 0 0 0 1-1.73Z"/><path d="M3.29 7 12 12l8.71-5"/><path d="M12 22V12"/></svg>
+                    <span style="font-size:0.8rem; font-weight:700; text-transform:uppercase; letter-spacing:1px;" data-i18n="nav_orders">Orders</span>
+                    <span class="cart-reminder-badge" id="navOrdersBadge"></span>
+                </div>
+                
+                <div style="cursor:pointer; font-weight:800; margin-left:10px; display:flex; align-items:center; gap:8px;" onclick="app.toggleCart()">
+                    <span data-i18n="nav_cart">CART</span> 
+                    <span id="cart-count" style="background:var(--primary); color:white; padding:2px 8px; border-radius:30px; font-size:12px;">0</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- MENU SECTION -->
+    <section id="menu" style="padding: 120px 0 100px;">
+        <div id="filterBanner" style="max-width:1200px; margin: 0 auto 20px; padding: 0 20px; display:none;">
+            <!-- Injected via JS -->
+        </div>
+        <div class="section-title" data-i18n="royal_selection">Royal Selection</div>
+        <div class="menu-grid" id="menu-grid">
+            <!-- Items Injected via JS -->
+        </div>
+    </section>
+
+    <!-- STICKY CHECKOUT BAR -->
+    <div class="sticky-checkout" id="stickyCheckout">
+        <div class="sc-details">
+            <h4 data-i18n="cart_total">Cart Total</h4>
+            <div class="total" id="scTotal">0 ETB</div>
+        </div>
+        <button class="sc-btn" onclick="app.toggleCart(true)" data-i18n="proceed_checkout">Proceed to Checkout</button>
+    </div>
+
+    <!-- CART SIDEBAR -->
+    <div class="modal-overlay" id="cartOverlay" onclick="if(event.target === this) app.toggleCart()"></div>
+    <div class="cart-panel" id="cartPanel">
+        <div class="cart-header">
+            <h3 style="color:white; font-size:18px; font-family:var(--font-display);" data-i18n="checkout">CHECKOUT</h3>
+            <span onclick="app.toggleCart()" style="font-size:24px; cursor:pointer; color:#777;">&times;</span>
+        </div>
+        
+        <div class="cart-body">
+            <div id="cartItems"></div>
+            
+            <div id="checkoutForm" style="margin-top: 30px; border-top: 1px solid rgba(255,255,255,0.05); padding-top:20px;">
+                <div class="form-group">
+                    <label class="form-label" data-i18n="label_name">Full Name</label>
+                    <input type="text" id="orderName" class="form-input" placeholder="John Doe">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" data-i18n="label_phone">Phone Number</label>
+                    <input type="tel" id="orderPhone" class="form-input" placeholder="0911...">
+                </div>
+
+                <div class="form-group" id="locationGroup" style="display:none;">
+                    <label class="form-label" data-i18n="label_location">Delivery Location</label>
+                    <select id="orderLocation" class="form-input" style="margin-bottom: 10px; cursor: pointer;">
+                        <option value="" data-i18n="select_subcity">Select Sub-City</option>
+                        <optgroup label="Addis Ababa" data-i18n-label="addis_ababa">
+                            <option value="Bole" data-i18n="bole">Bole</option>
+                            <option value="Yeka" data-i18n="yeka">Yeka</option>
+                            <option value="Akaki-Kality" data-i18n="akaki">Akaki-Kality</option>
+                            <option value="Arada" data-i18n="arada">Arada</option>
+                            <option value="Gullele" data-i18n="gullele">Gullele</option>
+                            <option value="Kirkos" data-i18n="kirkos">Kirkos</option>
+                            <option value="Kolfe-Keranio" data-i18n="kolfe">Kolfe-Keranio</option>
+                            <option value="Lideta" data-i18n="lideta">Lideta</option>
+                            <option value="Nifas-Silk Lafto" data-i18n="nifas">Nifas-Silk Lafto</option>
+                            <option value="Lemi Kura" data-i18n="lemi">Lemi Kura</option>
+                        </optgroup>
+                        <optgroup label="Adama" data-i18n-label="adama">
+                            <option value="Boku" data-i18n="boku">Boku</option>
+                            <option value="Bole (Adama)" data-i18n="bole">Bole (Adama)</option>
+                            <option value="Dambala" data-i18n="dambala">Dambala</option>
+                            <option value="Ganda Hara" data-i18n="ganda">Ganda Hara</option>
+                            <option value="Melka Adama" data-i18n="melka">Melka Adama</option>
+                            <option value="Lugo" data-i18n="lugo">Lugo</option>
+                        </optgroup>
+                        <optgroup label="Asela" data-i18n-label="asela">
+                            <option value="Arsi University" data-i18n="arussi_uni">Arsi University</option>
+                            <option value="Asela Hospital" data-i18n="asela_hosp">Asela Hospital</option>
+                            <option value="Stadium Area" data-i18n="asela_stadium">Stadium Area</option>
+                            <option value="Merkato" data-i18n="asela_merkato">Merkato (Asela)</option>
+                            <option value="Chilalo" data-i18n="chilalo">Chilalo</option>
+                            <option value="Bekoji" data-i18n="bekoji">Bekoji</option>
+                            <option value="Sagure" data-i18n="sagure">Sagure</option>
+                            <option value="Huruta" data-i18n="huruta">Huruta</option>
+                            <option value="Kersa" data-i18n="kersa">Kersa</option>
+                            <option value="Iteya" data-i18n="iteya">Iteya</option>
+                            <option value="Robe" data-i18n="robe">Robe</option>
+                            <option value="Dodola" data-i18n="dodola">Dodola</option>
+                            <option value="Ticho" data-i18n="ticho">Ticho</option>
+                            <option value="Munesa" data-i18n="munesa">Munesa</option>
+                            <option value="Kofele" data-i18n="kofele">Kofele</option>
+                            <option value="Bus Station (Asela)" data-i18n="asela_bus">Bus Station (Asela)</option>
+                            <option value="Commercial Center (Asela)" data-i18n="asela_commercial">Commercial Center (Asela)</option>
+                            <option value="Kebele 01 (Asela)" data-i18n="asela_k01">Kebele 01</option>
+                            <option value="Kebele 02 (Asela)" data-i18n="asela_k02">Kebele 02</option>
+                            <option value="Kebele 03 (Asela)" data-i18n="asela_k03">Kebele 03</option>
+                            <option value="Kebele 04 (Asela)" data-i18n="asela_k04">Kebele 04</option>
+                            <option value="Kebele 05 (Asela)" data-i18n="asela_k05">Kebele 05</option>
+                            <option value="Kebele 06 (Asela)" data-i18n="asela_k06">Kebele 06</option>
+                            <option value="Kebele 07 (Asela)" data-i18n="asela_k07">Kebele 07</option>
+                            <option value="Kebele 08 (Asela)" data-i18n="asela_k08">Kebele 08</option>
+                            <option value="Kebele 09 (Asela)" data-i18n="asela_k09">Kebele 09</option>
+                            <option value="Kebele 10 (Asela)" data-i18n="asela_k10">Kebele 10</option>
+                            <option value="Kebele 11 (Asela)" data-i18n="asela_k11">Kebele 11</option>
+                            <option value="Kebele 12 (Asela)" data-i18n="asela_k12">Kebele 12</option>
+                            <option value="Kebele 13 (Asela)" data-i18n="asela_k13">Kebele 13</option>
+                            <option value="Kebele 14 (Asela)" data-i18n="asela_k14">Kebele 14</option>
+                            <option value="Kebele 15 (Asela)" data-i18n="asela_k15">Kebele 15</option>
+                            <option value="Kebele 16 (Asela)" data-i18n="asela_k16">Kebele 16</option>
+                            <option value="Kebele 17 (Asela)" data-i18n="asela_k17">Kebele 17</option>
+                            <option value="Kebele 18 (Asela)" data-i18n="asela_k18">Kebele 18</option>
+                        </optgroup>
+                    </select>
+                    
+                    <label class="form-label" data-i18n="label_address_details">House/Building No.</label>
+                    <input type="text" id="orderAddressDetails" class="form-input" placeholder="Building, Room, House No.">
+                    
+                    <button type="button" onclick="app.captureGPS(this)" style="width:100%; margin-top:10px; background:rgba(46, 204, 113, 0.1); color:#2ecc71; border:1px solid rgba(46, 204, 113, 0.3); padding:10px; border-radius:12px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; transition:var(--transition);" onmouseover="this.style.background='rgba(46, 204, 113, 0.2)'" onmouseout="this.style.background='rgba(46, 204, 113, 0.1)'">
+                        📍 <span>Use Exact GPS Location</span>
+                    </button>
+                    <input type="hidden" id="orderGpsCoords" value="">
+                </div>
+
+                <label class="form-label" data-i18n="label_payment">Select Payment Method</label>
+                
+                <div class="pay-option" onclick="app.selectPayment('telebirr', this)">
+                    <input type="radio" name="pay" value="telebirr">
+                    <div style="margin-left:10px;">
+                        <div style="color:white; font-size:14px; font-weight:700;">Telebirr</div>
+                        <div style="font-size:11px; color:#777;" data-i18n="pay_via_tele">Pay with Telebirr App</div>
+                    </div>
+                </div>
+
+                <div class="pay-option" onclick="app.selectPayment('cbe', this)">
+                    <input type="radio" name="pay" value="cbe">
+                    <div style="margin-left:10px;">
+                        <div style="color:white; font-size:14px; font-weight:700;">CBE Birr</div>
+                        <div style="font-size:11px; color:#777;" data-i18n="pay_via_cbe">Pay with CBE Birr App</div>
+                    </div>
+                </div>
+
+
+                <div class="form-group" id="transGroup" style="margin-top:15px; display:none;">
+                    <label class="form-label" data-i18n="label_transaction">Transaction ID</label>
+                    <input type="text" id="transId" class="form-input" placeholder="Paste Reference Number here">
+                </div>
+            </div>
+        </div>
+
+        <div class="cart-footer">
+            <div class="summary-row"><span data-i18n="subtotal">Subtotal</span><span id="summarySubtotal">0 ETB</span></div>
+            <div class="summary-row"><span data-i18n="delivery_fee">Delivery Fee 🚚</span><span id="deliveryFee">0 ETB</span></div>
+            <div class="summary-row total"><span data-i18n="total_price">TOTAL PRICE</span><span id="summaryTotal">0 ETB</span></div>
+
+            <button class="btn btn-attractive" id="payBtn" style="width:100%; margin-top:20px;" onclick="app.processOrder()" data-i18n="pay_now">PAY NOW</button>
+        </div>
+    </div>
+
+    <!-- PROCESSING MODAL -->
+    <div class="modal-overlay" id="processingModal">
+        <div style="text-align:center; color:white;">
+            <div style="width:50px; height:50px; border:4px solid rgba(255,255,255,0.1); border-top:4px solid var(--primary); border-radius:50%; animation:spin 1s linear infinite; margin:0 auto 20px;"></div>
+            <h3 data-i18n="processing">Processing Order</h3>
+            <p style="color:#888; font-size:14px; margin-top:10px;" data-i18n="verifying">Verifying transaction...</p>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="successModal">
+        <div class="receipt-container">
+            <div class="receipt" id="receiptContent" style="padding: 35px 30px; width: 340px; margin: 0 auto; color: #000; font-family: monospace;">
+                <!-- Decorative zig-zag border top -->
+                <div style="position:absolute; top:-10px; left:0; width:100%; height:10px; background-image: radial-gradient(circle at 5px 0, transparent 5px, white 5px); background-size: 10px 10px; background-repeat: repeat-x;"></div>
+                
+                <div style="text-align:center; margin-bottom: 20px;">
+                    <div style="font-size: 28px; margin-bottom: 10px;">👑</div>
+                    <h3 style="margin: 0; font-size: 20px; font-weight: 900; letter-spacing: 1px;">QUEEN BURGER</h3>
+                    <p style="font-size:11px; margin-top:5px; color:#555; line-height:1.4;">
+                        17/-C, Addis Ababa Rd.<br>
+                        Contact: +251 911 123 456<br>
+                        <span id="receiptDate" style="font-weight:700;"></span>
+                    </p>
+                </div>
+                
+                <div id="receiptItems"></div>
+                
+                <div style="margin-top: 15px; padding-top: 15px; border-top: 1.5px solid #000;">
+                    <div style="display:flex; justify-content:space-between; font-size: 16px; font-weight: 900;">
+                        <span>TOTAL PAID:</span>
+                        <span id="receiptGrandTotal"></span>
+                    </div>
+                </div>
+                
+                <div id="thermalPaymentStatus" style="margin-top: 15px;"></div>
+                
+                <!-- NEW QR CODE SECTION -->
+                <div class="receipt-qr-wrapper">
+                    <div class="receipt-qr-title" data-i18n="scan_to_verify">Scan to Verify</div>
+                    <div id="receiptQR"></div>
+                </div>
+
+                <div style="margin-top:25px; text-align:center; font-size:10px; color:#666; border-top: 1px dashed #ccc; padding-top:15px;">
+                    THANK YOU FOR CHOOSING ROYALTY!
+                </div>
+
+                <!-- Decorative zig-zag border bottom -->
+                <div style="position:absolute; bottom:-10px; left:0; width:100%; height:10px; background-image: radial-gradient(circle at 5px 10px, white 5px, transparent 5px); background-size: 10px 10px; background-repeat: repeat-x;"></div>
+            </div>
+            
+            <div class="no-print" style="margin-top:35px; text-align:center;">
+                <button onclick="app.closeSuccess()" style="background: var(--primary); color: white; width: 100%; border: none; padding: 18px; border-radius: 16px; font-weight: 900; font-family: var(--font-display); cursor: pointer; text-transform: uppercase; box-shadow: 0 10px 30px rgba(255,81,43,0.3); border: 2px solid rgba(255,255,255,0.1);">DONE & CONTINUE</button>
+                <p style="margin-top:15px; font-size:11px; color:rgba(255,255,255,0.4); text-transform:uppercase; letter-spacing:1px;">Screenshots available in my orders</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- BOTTOM NAVIGATION (MOBILE ONLY) -->
+    <nav class="bottom-nav">
+        <div class="b-nav-item" onclick="location.href='index.html'">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            <span style="font-size:10px; font-weight:800;">HOME</span>
+        </div>
+        <div class="b-nav-item active" onclick="location.href='menu.html'">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z"/><path d="M3.6 15h16.8"/><path d="M3.6 9h16.8"/><path d="M11.5 3a17 17 0 0 0 0 18"/><path d="M12.5 3a17 17 0 0 1 0 18"/></svg>
+            <span style="font-size:10px; font-weight:800;">MENU</span>
+        </div>
+        <div class="b-nav-item" onclick="location.href='orders.html'">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>
+            <span style="font-size:10px; font-weight:800;" data-i18n="nav_orders">Orders</span>
+        </div>
+        <div class="b-nav-item" onclick="app.toggleLanguage()">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
+            <span id="currentLangBottom" style="font-size:10px; font-weight:800;">EN</span>
+        </div>
+    </nav>
+
+    <!-- Scripts -->
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="i18n.js"></script>
+    <script src="script.js"></script>
+    <script>
+        // Update bottom nav lang label on change
+        window.addEventListener('languageChanged', (e) => {
+            const label = document.getElementById('currentLangBottom');
+            if (label) label.innerText = e.detail.toUpperCase();
+        });
+    </script>
+</body>
+</html>

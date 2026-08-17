@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QUEEN BURGER | Home 🍔</title>
+    <!-- Premium Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800;900&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- HEADER -->
+    <header>
+        <div class="nav-container">
+            <div class="logo" onclick="location.href='index.html'">QUEEN <span data-i18n="logo_burger">BURGER</span></div>
+            
+            <div class="nav-actions" style="margin-left: auto;">
+                <!-- Language Switcher -->
+                <div class="lang-switch" onclick="app.toggleLanguage()" style="cursor:pointer; margin-right:20px; display:flex; align-items:center; gap:8px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
+                    <span id="currentLang" style="font-weight:700; font-size:14px;">EN</span>
+                </div>
+
+                <div class="nav-orders-wrap" id="navOrdersBtn" onclick="location.href='orders.html'">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-package"><path d="M16.5 9.4 7.55 4.24"/><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4a2 2 0 0 0 1-1.73Z"/><path d="M3.29 7 12 12l8.71-5"/><path d="M12 22V12"/></svg>
+                    <span style="font-size:0.8rem; font-weight:700; text-transform:uppercase; letter-spacing:1px;" data-i18n="nav_orders">Orders</span>
+                    <span class="cart-reminder-badge" id="navOrdersBadge"></span>
+                </div>
+                
+                <button class="btn btn-primary" onclick="location.href='menu.html'" style="padding: 10px 20px; font-size: 12px; margin-left: 10px;" data-i18n="royal_selection">View Menu</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- HERO -->
+    <section class="hero">
+        <!-- Floating Decorations -->
+        <img src="hero_big.png" class="hero-bg-big">
+        <img src="hero_small.png" class="hero-bg-small">
+        <img src="hero_drink.png" class="hero-bg-drink">
+
+        <h1 data-i18n="hero_title">THE KING OF TASTE</h1>
+        <p style="color:var(--text-muted); text-transform:uppercase; letter-spacing: 4px; margin-bottom: 20px; font-weight:600;" data-i18n="hero_subtitle">Premium Quality Burgers</p>
+        
+        <div class="order-type-selector" style="display:flex; gap:20px; margin-top:30px;">
+            <button class="btn btn-primary" onclick="location.href='menu.html?type=pickup'" style="border-radius:12px; gap:8px;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9h18v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9Z"/><path d="m3 9 2.45-4.91A2 2 0 0 1 7.24 3h9.52a2 2 0 0 1 1.79 1.09L21 9"/><path d="M12 3v6"/></svg>
+                <span data-i18n="pickup">PICKUP</span>
+            </button>
+            <button class="btn btn-attractive" onclick="location.href='menu.html?type=delivery'" style="border-radius:12px; gap:8px;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 17h4V5H2v12h3"/><path d="M20 17h2v-3.34a4 4 0 0 0-1.17-2.83L19 9h-5"/><circle cx="7.5" cy="17.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg>
+                <span data-i18n="delivery">DELIVERY</span>
+            </button>
+        </div>
+
+        <!-- Contact Info Box -->
+        <div class="hero-contact-box">
+            <div class="hero-contact-item">
+                <div class="hero-contact-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.62 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.6a16 16 0 0 0 6 6l.96-.96a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                </div>
+                <div>
+                    <div class="hero-contact-label" data-i18n="call_us">Call Us</div>
+                    <div class="hero-contact-value">+251 911 000 000</div>
+                </div>
+            </div>
+            <div class="hero-contact-divider"></div>
+            <div class="hero-contact-item">
+                <div class="hero-contact-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                </div>
+                <div>
+                    <div class="hero-contact-label" data-i18n="location">Location</div>
+                    <div class="hero-contact-value" data-i18n="hero_location_val">Addis Ababa, Bole</div>
+                </div>
+            </div>
+            <div class="hero-contact-divider"></div>
+            <div class="hero-contact-item">
+                <div class="hero-contact-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                </div>
+                <div>
+                    <div class="hero-contact-label" data-i18n="hours">Hours</div>
+                    <div class="hero-contact-value" data-i18n="hero_hours_val">10:00 AM – 11:00 PM</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- QUICK SECTIONS -->
+    <div class="promo-section">
+         <div class="featured-card" onclick="location.href='menu.html?filter=popular'">
+             <div class="f-card-content">
+                <h3 data-i18n="popular_items">POPULAR ITEMS</h3>
+                <p data-i18n="popular_desc">Top burgers this week</p>
+             </div>
+             <img src="home_popular.png" class="f-card-img">
+         </div>
+         <div class="featured-card card-combo" onclick="location.href='menu.html?filter=combo'">
+             <div class="f-card-content">
+                <h3 data-i18n="combos_offers">COMBOS & OFFERS</h3>
+                <p data-i18n="offers_desc">Save more with royale combos</p>
+             </div>
+             <img src="home_combo.png" class="f-card-img">
+         </div>
+    </div>
+
+    <!-- BOTTOM NAVIGATION (MOBILE ONLY) -->
+    <nav class="bottom-nav">
+        <div class="b-nav-item active" onclick="location.href='index.html'">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            <span style="font-size:10px; font-weight:800;">HOME</span>
+        </div>
+        <div class="b-nav-item" onclick="location.href='menu.html'">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z"/><path d="M3.6 15h16.8"/><path d="M3.6 9h16.8"/><path d="M11.5 3a17 17 0 0 0 0 18"/><path d="M12.5 3a17 17 0 0 1 0 18"/></svg>
+            <span style="font-size:10px; font-weight:800;">MENU</span>
+        </div>
+        <div class="b-nav-item" onclick="location.href='orders.html'">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>
+            <span style="font-size:10px; font-weight:800;" data-i18n="nav_orders">Orders</span>
+        </div>
+        <div class="b-nav-item" onclick="app.toggleLanguage()">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
+            <span id="currentLangBottom" style="font-size:10px; font-weight:800;">EN</span>
+        </div>
+    </nav>
+
+    <!-- Scripts -->
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="i18n.js"></script>
+    <script src="script.js"></script>
+    <script>
+        // Update bottom nav lang label on change
+        window.addEventListener('languageChanged', (e) => {
+            const label = document.getElementById('currentLangBottom');
+            if (label) label.innerText = e.detail.toUpperCase();
+        });
+    </script>
+</body>
+</html>
